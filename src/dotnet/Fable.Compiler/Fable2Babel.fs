@@ -1262,11 +1262,28 @@ module Util =
 module Compiler =
     open Util
 
-    let createFacade (sourceFiles: string[]) (facadeFile: string) =
-        let decls =
+    let createFacade (com: ICompiler) (sourceFiles: string[]) (facadeFile: string) =
+        let exportDecl =
             let importFile = Array.last sourceFiles
             StringLiteral(Path.getRelativeFileOrDirPath false facadeFile false importFile)
-            |> ExportAllDeclaration :> ModuleDeclaration |> U2.Case2 |> List.singleton
+            |> ExportAllDeclaration
+        
+        let decls =
+            if not com.Options.forceAllFiles then
+                exportDecl :> ModuleDeclaration |> U2.Case2 |> List.singleton
+            else
+                let moduleDecls =
+                    seq {
+                        yield exportDecl :> ModuleDeclaration
+                        for importFile in sourceFiles do
+                            let source = StringLiteral(Path.getRelativeFileOrDirPath false facadeFile false importFile)
+                            yield ImportDeclaration([], source) :> ModuleDeclaration
+                    }
+                
+                moduleDecls
+                |> Seq.map U2.Case2
+                |> List.ofSeq
+
         Program(facadeFile, SourceLocation.Empty, decls, sourceFiles=sourceFiles)
 
     let transformFile (com: ICompiler) (state: ICompilerState) (file: Fable.File) =

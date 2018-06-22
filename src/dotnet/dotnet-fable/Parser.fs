@@ -14,6 +14,7 @@ type Message =
       declaration: bool
       typedArrays: bool
       clampByteArrays: bool
+      forceAllFiles: bool
       extra: IDictionary<string,string> }
 
 let foldi f init (xs: 'T seq) =
@@ -98,6 +99,7 @@ let parse (msg: string) =
       plugins = parseStringArray [||] "plugins" json
       fableCore = tryParseString "fableCore" json
       declaration = parseBoolean false "declaration" json
+      forceAllFiles = parseBoolean false "forceAllFiles" json
       typedArrays = parseBoolean true "typedArrays" json
       clampByteArrays = parseBoolean false "clampByteArrays" json
       extra = parseDic "extra" json }

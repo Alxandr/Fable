@@ -208,7 +208,7 @@ let addFSharpErrorLogs (com: ICompiler) (errors: FSharpErrorInfo array) (fileFil
 
 let compile (com: Compiler) (project: Project) (filePath: string) =
     if filePath.EndsWith(".fsproj") then
-        Fable2Babel.Compiler.createFacade project.ProjectOptions.SourceFiles filePath
+        Fable2Babel.Compiler.createFacade com project.ProjectOptions.SourceFiles filePath
         |> toJson
     else
         let babel =
@@ -242,6 +242,7 @@ let startAgent () = MailboxProcessor<Command>.Start(fun agent ->
                       emitReplacements = Map.empty // TODO: Parse from message
                       typedArrays = msg.typedArrays
                       clampByteArrays = msg.clampByteArrays
+                      forceAllFiles = msg.forceAllFiles
                       declaration = msg.declaration }
                 let com = Compiler(options=comOptions, plugins=loadPlugins msg.plugins)
                 // If the project has been updated and this is a watch compilation, add

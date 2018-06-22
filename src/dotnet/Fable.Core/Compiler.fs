@@ -5,6 +5,7 @@ type CompilerOptions =
       emitReplacements: Map<string, string>
       typedArrays: bool
       clampByteArrays: bool
+      forceAllFiles: bool
       /// ATTENTION: This is not working at the moment
       declaration: bool }
 

@@ -105,6 +105,7 @@ let getDefaultOptions(replacements) =
       emitReplacements = replacements
       typedArrays = true
       clampByteArrays = false
+      forceAllFiles = false
       declaration = false }
 
 /// Type with utilities for compiling F# files to JS
